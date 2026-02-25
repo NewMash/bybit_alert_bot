@@ -10,21 +10,30 @@ async def start(update, context):
 
 
 async def status_all(update, context):
-    funding = get_all_funding()
-    if not funding:
-        await update.message.reply_text("Errore nel recupero funding da Bybit.")
+    data = get_all_funding()  # la tua funzione
+    if not data:
+        await update.message.reply_text("Nessun dato disponibile.")
         return
 
-    msg = "📊 *Funding Rates*\n\n"
-    for f in funding:
-        msg += (
+    msg = ""
+    for f in data:
+        line = (
             f"{f['symbol']}:\n"
             f"  Rate: `{f['fundingRate']}`\n"
-            f"  Predicted: `{f['predictedFundingRate']}`\n"
             f"  Interval: `{f['fundingInterval']}`\n\n"
         )
 
-    await update.message.reply_markdown(msg)
+        # Se aggiungere questa riga supera il limite, invia il blocco e ricomincia
+        if len(msg) + len(line) > 3500:
+            await update.message.reply_markdown(msg)
+            msg = ""
+
+        msg += line
+
+    # Invia l’ultimo blocco
+    if msg:
+        await update.message.reply_markdown(msg)
+
 
 
 async def status_extreme(update, context):
