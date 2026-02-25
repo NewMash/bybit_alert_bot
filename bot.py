@@ -39,7 +39,7 @@ def main():
     app.add_handler(CommandHandler("status_all", status_all))
     app.add_handler(CommandHandler("status_extreme", status_extreme))
 
-    app.job_queue.run_once(lambda *_: asyncio.create_task(alert_loop(app)), 5)
+    app.job_queue.run_repeating(lambda *_: asyncio.create_task(alert_loop(app)), interval=60, first=5)
 
     app.run_polling()
 
