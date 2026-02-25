@@ -10,7 +10,7 @@ async def start(update, context):
 
 
 async def status_all(update, context):
-    data = get_all_funding()  # la tua funzione
+    data = get_all_funding()
     if not data:
         await update.message.reply_text("Nessun dato disponibile.")
         return
@@ -23,17 +23,16 @@ async def status_all(update, context):
             f"  Interval: `{f['fundingInterval']}`\n\n"
         )
 
-        # Se aggiungere questa riga supera il limite, invia il blocco e ricomincia
+        # Se il messaggio diventa troppo lungo, invia e ricomincia
         if len(msg) + len(line) > 3500:
-            await update.message.reply_markdown(msg)
+            await update.message.reply_text(msg, parse_mode="Markdown")
             msg = ""
 
         msg += line
 
     # Invia l’ultimo blocco
     if msg:
-        await update.message.reply_markdown(msg)
-
+        await update.message.reply_text(msg, parse_mode="Markdown")
 
 
 async def status_extreme(update, context):
@@ -50,4 +49,4 @@ async def status_extreme(update, context):
             f"  Interval: `{f['fundingInterval']}`\n\n"
         )
 
-    await update.message.reply_markdown(msg)
+    await update.message.reply_text(msg, parse_mode="Markdown")
