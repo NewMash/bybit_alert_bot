@@ -1,31 +1,16 @@
-from bybit_client import get_symbols, get_ticker
+async def alert_loop(app):
+    extreme = get_extreme_funding()
+    if extreme:
+        msg = "🚨 *Funding Estremi Rilevati*\n\n"
+        for f in extreme:
+            msg += (
+                f"{f['symbol']}:\n"
+                f"  Rate: `{f['fundingRate']}`\n"
+                f"  Interval: `{f['fundingInterval']}`\n\n"
+            )
 
-
-def get_all_funding():
-    symbols = get_symbols()
-    results = []
-
-    for sym in symbols:
-        t = get_ticker(sym)
-        if not t:
-            continue
-
-        try:
-            funding_rate = float(t.get("fundingRate", 0.0))
-            predicted = float(t.get("predictedFundingRate", 0.0))
-        except ValueError:
-            continue
-
-        results.append({
-            "symbol": sym,
-            "fundingRate": funding_rate,
-            "predictedFundingRate": predicted,
-            "fundingInterval": t.get("fundingRateInterval", "N/A")
-        })
-
-    return results
-
-
-def get_extreme_funding(threshold=0.01):
-    all_funding = get_all_funding()
-    return [f for f in all_funding if abs(f["fundingRate"]) >= threshold]
+        await app.bot.send_message(
+            chat_id=CHAT_ID,
+            text=msg,
+            parse_mode="Markdown"
+        )
