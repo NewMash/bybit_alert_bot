@@ -5,9 +5,9 @@ from telegram.ext import ApplicationBuilder, CommandHandler
 from commands import start, status_all, status_extreme
 from alert_logic import get_extreme_funding
 
-load_dotenv()
+load_dotenv(dotenv_path="/root/bybit_alert_bot/.env")
 
-BOT_TOKEN = os.getenv("BOT_TOKEN")
+BOT_TOKEN = os.getenv("TELEGRAM_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
 
 
